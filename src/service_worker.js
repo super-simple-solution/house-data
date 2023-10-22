@@ -8,3 +8,4 @@
 // }
 
 // initEventHandler(contentReq)
+console.log('1')

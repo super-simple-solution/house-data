@@ -19,7 +19,7 @@
   },
   "permissions": ["scripting"],
   "host_permissions":  [
-    "<all_urls>"
+    "https://*.ke.com/ershoufang/*"
   ],
   "content_scripts": [
     {
@@ -28,7 +28,7 @@
       ],
       "run_at": "document_idle",
       "matches": [
-        "<all_urls>"
+        "https://*.ke.com/ershoufang/*"
       ],
       "all_frames": false
     }
