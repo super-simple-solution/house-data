@@ -1,4 +1,5 @@
 import { $$, getEle, createEle, getNumber } from '@/utils'
+import '@/style/index.scss'
 
 function init() {
   const area = getArea()
@@ -9,10 +10,19 @@ function init() {
   if (!priceEle || !areaEle) return
   const totalPriceEle = getEle('.total', priceEle)
   const unitPrice = Math.ceil((Number(totalPriceEle?.textContent) * 10000) / area)
-  const finalPriceEle = createEle({ content: `${unitPrice} 元/平米(实用面积对应单价)` })
-  const finalAreaEle = createEle({ content: `${area} 平米(实用面积)` })
+  const finalUnit = createEle({ content: '(实用面积)', class: 'text-[#999] font-normal text-xs' })
+  const finalPriceValue = createEle({ content: `${unitPrice} 元`, class: 'text-rose-600 font-black text-sm' })
+  const finalPriceEle = createEle({ content: '', class: 'final-price-ele flex my-1 w-[150px] items-center' })
+  finalPriceEle.appendChild(finalPriceValue)
+  finalPriceEle.appendChild(finalUnit)
+
+  const finalAreaValue = createEle({ content: `${area} 平米`, class: 'text-rose-600 font-black text-sm' })
+  const finalAreaEle = createEle({ content: '', class: 'final-area-ele flex my-1 w-[150px] items-center' })
+  finalAreaEle.appendChild(finalAreaValue)
+  finalAreaEle.appendChild(finalUnit)
+
   const efficiencyRatio = ((area / getNumber(totalArea?.textContent)) * 100).toFixed(2) + '%'
-  const efficiencyRatioEle = createEle({ content: `得房率 ${efficiencyRatio}` })
+  const efficiencyRatioEle = createEle({ content: `得房率 ${efficiencyRatio}`, class: 'text-rose-600 text-sm' })
 
   const subInfoEle = getEle('.subInfo', areaEle) as HTMLElement
   getEle('.text', priceEle)?.insertBefore(finalPriceEle, getEle('.text .tax', priceEle) as HTMLElement)
