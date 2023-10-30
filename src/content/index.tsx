@@ -11,6 +11,7 @@ function init() {
   const totalPriceEle = getEle('.total', priceEle)
   const unitPrice = Math.ceil((Number(totalPriceEle?.textContent) * 10000) / area)
 
+  // 跳转至实用面积数据
   const toTarget = () => getEle('[data-component="houseLayout"')?.scrollIntoView()
   const areaTarget = () => {
     return (
@@ -20,6 +21,7 @@ function init() {
     )
   }
 
+  // 实用面积对应价格
   const finalPriceEle = (
     <div class="final-price-ele my-1 flex items-center">
       <div class="text-xs text-[#999]">
@@ -29,6 +31,7 @@ function init() {
     </div>
   )
 
+  // 实用面积
   const finalAreaEle = (
     <div class="final-area-ele my-1 flex w-[150px] items-center">
       <div class="text-xs text-[#999]">
@@ -38,6 +41,7 @@ function init() {
     </div>
   )
 
+  // 得房率
   const efficiencyRatio = ((area / getNumber(totalArea?.textContent)) * 100).toFixed(2) + '%'
   const efficiencyRatioEle = createEle({
     content: `得房率 ${efficiencyRatio}`,
