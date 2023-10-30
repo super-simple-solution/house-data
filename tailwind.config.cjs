@@ -1,6 +1,10 @@
 module.exports = {
   theme: {
-    extend: {},
+    fontSize: {
+      xs: '10px',
+      sm: '12px',
+      lg: '18px',
+    },
   },
   variants: {
     extend: {},

@@ -10,22 +10,44 @@ function init() {
   if (!priceEle || !areaEle) return
   const totalPriceEle = getEle('.total', priceEle)
   const unitPrice = Math.ceil((Number(totalPriceEle?.textContent) * 10000) / area)
-  const finalUnit = createEle({ content: '(实用面积)', class: 'text-[#999] font-normal text-xs' })
-  const finalPriceValue = createEle({ content: `${unitPrice} 元`, class: 'text-rose-600 font-black text-sm' })
-  const finalPriceEle = createEle({ content: '', class: 'final-price-ele flex my-1 w-[150px] items-center' })
-  finalPriceEle.appendChild(finalPriceValue)
-  finalPriceEle.appendChild(finalUnit)
 
-  const finalAreaValue = createEle({ content: `${area} 平米`, class: 'text-rose-600 font-black text-sm' })
-  const finalAreaEle = createEle({ content: '', class: 'final-area-ele flex my-1 w-[150px] items-center' })
-  finalAreaEle.appendChild(finalAreaValue)
-  finalAreaEle.appendChild(finalUnit)
+  const toTarget = () => getEle('[data-component="houseLayout"')?.scrollIntoView()
+  const areaTarget = () => {
+    return (
+      <a class="cursor-pointer text-[#4688f1]" onClick={toTarget}>
+        实用面积
+      </a>
+    )
+  }
+
+  const finalPriceEle = (
+    <div class="final-price-ele my-1 flex items-center">
+      <div class="text-xs text-[#999]">
+        <span class="text-lg font-semibold text-rose-600">{unitPrice}</span> 元/平米
+        <span>(根据{areaTarget()}计算)</span>
+      </div>
+    </div>
+  )
+
+  const finalAreaEle = (
+    <div class="final-area-ele my-1 flex w-[150px] items-center">
+      <div class="text-xs text-[#999]">
+        <span class="text-lg font-semibold text-rose-600">{area}</span> 平米
+        <span>({areaTarget()})</span>
+      </div>
+    </div>
+  )
 
   const efficiencyRatio = ((area / getNumber(totalArea?.textContent)) * 100).toFixed(2) + '%'
-  const efficiencyRatioEle = createEle({ content: `得房率 ${efficiencyRatio}`, class: 'text-rose-600 text-sm' })
+  const efficiencyRatioEle = createEle({
+    content: `得房率 ${efficiencyRatio}`,
+    class: 'text-rose-600 font-semibold text-sm',
+  })
 
   const subInfoEle = getEle('.subInfo', areaEle) as HTMLElement
+  // @ts-expect-error jsx dom
   getEle('.text', priceEle)?.insertBefore(finalPriceEle, getEle('.text .tax', priceEle) as HTMLElement)
+  // @ts-expect-error jsx dom
   areaEle.insertBefore(finalAreaEle, subInfoEle)
   areaEle.insertBefore(efficiencyRatioEle, subInfoEle)
 }

@@ -24,7 +24,7 @@ export function getAttrs(el: Element) {
 
 export function createEle(option: {
   tag?: string
-  content: string
+  content?: string
   class?: string
   style?: string
   attrs?: DynamicObject
@@ -37,6 +37,11 @@ export function createEle(option: {
   return el
 }
 
+/**
+ *
+ * @param str 室内面积15.3平方
+ * @returns number 15.3
+ */
 export function getNumber(str: string | null | undefined): number {
   return Number((str || '').replace(/[^(\d|.)]/g, ''))
 }
