@@ -17,10 +17,6 @@
     "service_worker": "src/service_worker.js",
     "type": "module"
   },
-  "permissions": ["scripting"],
-  "host_permissions":  [
-    "https://*.ke.com/ershoufang/*"
-  ],
   "content_scripts": [
     {
       "js": [
