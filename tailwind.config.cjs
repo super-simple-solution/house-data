@@ -5,6 +5,10 @@ module.exports = {
       sm: '12px',
       lg: '18px',
     },
+    colors: {
+      red: '#fe615a',
+      info: '#aaa',
+    },
   },
   variants: {
     extend: {},
