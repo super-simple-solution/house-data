@@ -1,4 +1,5 @@
 module.exports = {
+  prefix: 'sss-',
   theme: {
     fontSize: {
       xs: '10px',
@@ -6,7 +7,8 @@ module.exports = {
       lg: '18px',
     },
     colors: {
-      red: '#fe615a',
+      warning: '#fe615a',
+      primary: '#3072f6',
       info: '#aaa',
     },
   },

@@ -21,8 +21,8 @@ function init() {
   if (!priceEle || !areaEle) return
   const totalPriceEle = getEle('.total', priceEle)
   const unitPrice = Math.ceil((Number(totalPriceEle?.textContent) * 10000) / areaInfo.size)
-  const taxTarget = getEle('.jing-item + li')
-  const tax = taxTarget?.querySelector('.number')?.textContent
+  const taxElTarget = getEle('.jing-item + .item')
+  const tax = taxElTarget?.querySelector('.number')?.textContent
 
   // 跳转至测量/套内面积数据
   const goToAreaEle = () => {
@@ -41,41 +41,47 @@ function init() {
 
   const goToTaxEle = () => {
     const scrollTarget = getEle('.tab-tax') as HTMLElement
-    const target = taxTarget as HTMLElement
+    const target = taxElTarget as HTMLElement
     if (!scrollTarget || !target) return
     scrollAndBlink(scrollTarget, target)
   }
 
-  const areaTarget = () => {
-    return (
-      <a class="cursor-pointer text-[#4688f1]" onClick={goToAreaEle}>
-        {areaInfo.type === AreaType.Manual ? '测量面积' : '套内面积'}
-      </a>
-    )
-  }
-
-  const taxEle = () => (
-    <a class="text-red hover:cursor-pointer hover:text-[#4688f1]" onClick={goToTaxEle}>
-      {tax}万元
+  const areaTarget = () => (
+    <a class="sss-text-primary sss-cursor-pointer" onClick={goToAreaEle}>
+      {areaInfo.type === AreaType.Manual ? '测量面积' : '套内面积'}
     </a>
+  )
+
+  const taxTarget = () => (
+    <a class="sss-text-primary sss-cursor-pointer" onClick={goToTaxEle}>
+      税费
+    </a>
+  )
+
+  const taxEle = (
+    <span>
+      税费：
+      <span class="sss-text-warning sss-hover:cursor-pointer sss-hover:underline">{tax}万元</span>
+      <span>{taxTarget()}</span>
+    </span>
   )
 
   // 测量/套内面积对应价格
   const finalPriceEle = (
-    <div class="final-price-ele my-1 flex items-center">
-      <div class="text-xs text-info">
-        <span class="text-lg font-semibold text-red">{unitPrice}</span> 元/平米
-        <span>(根据{areaTarget()}计算)</span>
+    <div class="final-price-ele sss-my-1 sss-flex sss-items-center">
+      <div class="sss-text-xs">
+        <span class="sss-text-warning sss-text-lg sss-font-semibold">{unitPrice}</span>元/平米
+        <span class="sss-text-info">(根据{areaTarget()}计算)</span>
       </div>
     </div>
   )
 
   // 测量/套内面积
   const finalAreaEle = (
-    <div class="final-area-ele my-1 flex w-[150px] items-center">
-      <div class="text-xs text-info">
-        <span class="text-lg font-semibold text-red">{areaInfo.size}</span> 平米
-        <span>({areaTarget()})</span>
+    <div class="final-area-ele sss-my-1 sss-flex sss-w-[150px] sss-items-center">
+      <div class="sss-text-xs">
+        <span class="sss-text-warning sss-text-lg sss-font-semibold">{areaInfo.size}</span>平米
+        <span class="sss-text-info">({areaTarget()})</span>
       </div>
     </div>
   )
@@ -84,11 +90,11 @@ function init() {
   const efficiencyRatio = ((areaInfo.size / getNumber(totalArea?.textContent)) * 100).toFixed(2) + '%'
 
   const efficiencyRatioEle = (
-    <div class="flex items-center">
-      <div class="text-xs text-info">
+    <div class="sss-flex sss-items-center">
+      <div class="sss-text-xs">
         <span>得房率</span>
-        <span class="text-lg font-semibold text-red"> {efficiencyRatio}</span>
-        <span>(根据{areaTarget()}计算)</span>
+        <span class="sss-text-warning sss-text-lg sss-font-semibold"> {efficiencyRatio}</span>
+        <span class="sss-text-info">(根据{areaTarget()}计算)</span>
       </div>
     </div>
   )
@@ -100,7 +106,7 @@ function init() {
   areaEle.insertBefore(finalAreaEle, subInfoEle)
   areaEle.insertBefore(efficiencyRatioEle, subInfoEle)
   const taxContainer = getEle('.price-container .price div.text')
-  taxContainer?.append(taxEle())
+  taxContainer?.appendChild(taxEle)
 }
 
 init()
