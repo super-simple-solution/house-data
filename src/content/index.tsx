@@ -23,7 +23,9 @@ function init() {
   const housePrice = Number(totalPriceEle?.textContent)
   const unitPrice = Math.ceil((housePrice * 10000) / areaInfo.size)
   const taxElTarget = getEle('.jing-item + .item')
+  let hasTaxInfo = false
   const tax = taxElTarget?.querySelector('.number')?.textContent
+  if (tax) hasTaxInfo = true
   const taxNumber = getNumber(tax)
   const agencyFee = [housePrice * 0.01, housePrice * 0.03]
   const totalPriceLow = (housePrice + taxNumber + agencyFee[0]).toFixed(2)
@@ -63,16 +65,20 @@ function init() {
     </a>
   )
 
-  const taxEle = (
+  const priceInfoEle = (
     <div class="sss-my-1">
       <div class="sss-text-xs sss-text-info">
-        <span>
-          <span class="sss-cursor-pointer sss-text-lg sss-font-semibold sss-text-warning hover:sss-underline">
-            {taxTarget()}
-            <span class="sss-text-xs sss-font-normal">万</span>
+        {hasTaxInfo ? (
+          <span>
+            <span class="sss-cursor-pointer sss-text-lg sss-font-semibold sss-text-warning hover:sss-underline">
+              {taxTarget()}
+              <span class="sss-text-xs sss-font-normal">万</span>
+            </span>
+            税费
           </span>
-          税费
-        </span>
+        ) : (
+          ''
+        )}
         <span>
           <span class="sss-text-lg sss-font-semibold sss-text-warning">
             {agencyFee[0].toFixed(2)}~{agencyFee[1].toFixed(2)}
@@ -86,7 +92,7 @@ function init() {
           {totalPriceLow}~{totalPriceHigh}
           <span class="sss-text-xs sss-font-normal">万</span>
         </span>
-        总成本
+        总成本{hasTaxInfo ? '' : '(不包含税费)'}
       </div>
     </div>
   )
@@ -130,8 +136,8 @@ function init() {
   // @ts-expect-error jsx dom
   areaEle.insertBefore(finalAreaEle, subInfoEle)
   areaEle.insertBefore(efficiencyRatioEle, subInfoEle)
-  const taxContainer = getEle('.price-container .price div.text')
-  taxContainer?.appendChild(taxEle)
+  const priceContainer = getEle('.price-container .price div.text')
+  priceContainer?.appendChild(priceInfoEle)
 }
 
 init()
