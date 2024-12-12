@@ -15,9 +15,10 @@ type AreaInfo = {
 function init() {
   const areaInfo: AreaInfo = getAreaInfo()
   if (!areaInfo.size) return
-  const priceEle = getEle('.price-container .price')
+  const priceEle = getEle('.price-container .price') 
   const areaEle = getEle('.houseInfo .area')
   const totalArea = getEle('.mainInfo', areaEle)
+  const totalAreaNumber = getNumber(totalArea?.textContent)
   if (!priceEle || !areaEle) return
   const totalPriceEle = getEle('.total', priceEle)
   const housePrice = Number(totalPriceEle?.textContent)
@@ -31,6 +32,18 @@ function init() {
   const totalPriceLow = (housePrice + taxNumber + agencyFee[0]).toFixed(2)
   const totalPriceHigh = (housePrice + taxNumber + agencyFee[1]).toFixed(2)
 
+  // 装修情况
+  const labelList = $$('#introduction .label')
+  const decorateEle = labelList.find(item => item.textContent?.trim() === '装修情况')
+  const needRedecorate = decorateEle && decorateEle.nextSibling?.textContent?.trim() === '简装'
+  let redecoratePriceLow = '0'
+  let redecoratePriceMid = '0'
+  let redecoratePriceHigh = '0'
+  if (needRedecorate) {
+    redecoratePriceLow = (areaInfo.size * 0.1).toFixed(2)
+    redecoratePriceMid = (areaInfo.size * 0.2).toFixed(2)
+    redecoratePriceHigh = (areaInfo.size * 0.3).toFixed(2)
+  }
   // 跳转至测量/套内面积数据
   const goToAreaEle = () => {
     let scrollTarget
@@ -53,6 +66,13 @@ function init() {
     scrollAndBlink(scrollTarget, target)
   }
 
+  const goToDecorateEle = () => {
+    const scrollTarget = getEle('#introduction .content') as HTMLElement
+    const target = decorateEle?.parentElement as HTMLElement
+    if (!scrollTarget || !target) return
+    scrollAndBlink(scrollTarget, target)
+  }
+
   const areaTarget = () => (
     <a class="sss-cursor-pointer sss-text-primary" onClick={goToAreaEle}>
       {areaInfo.type === AreaType.Manual ? '测量面积' : '套内面积'}
@@ -62,6 +82,12 @@ function init() {
   const taxTarget = () => (
     <a class="" onClick={goToTaxEle}>
       {tax}
+    </a>
+  )
+
+  const decorateTarget = () => (
+    <a class="sss-cursor-pointer sss-text-primary" onClick={goToDecorateEle}>
+      {needRedecorate ? '简装': '精装'}
     </a>
   )
 
@@ -92,7 +118,28 @@ function init() {
           {totalPriceLow}~{totalPriceHigh}
           <span class="sss-text-xs sss-font-normal">万</span>
         </span>
-        总成本{hasTaxInfo ? '' : '(不包含税费)'}
+        购房总成本{hasTaxInfo ? '' : '(不含税费)'}
+      </div>
+      <div class="sss-my-1 sss-text-xs sss-text-info">
+      {needRedecorate ? (
+        <span>
+          <span class="sss-text-lg sss-font-semibold sss-text-warning">
+            {redecoratePriceLow}<span class="sss-text-xs sss-font-normal">万</span>
+            <span class="sss-text-xs sss-font-normal sss-text-info">(1000/㎡)</span>
+          </span>/
+          <span class="sss-text-lg sss-font-semibold sss-text-warning">
+            {redecoratePriceMid}<span class="sss-text-xs sss-font-normal">万</span>
+            <span class="sss-text-xs sss-font-normal sss-text-info">(2000/㎡)</span>
+          </span>/
+          <span class="sss-text-lg sss-font-semibold sss-text-warning">
+            {redecoratePriceHigh}<span class="sss-text-xs sss-font-normal">万</span>
+            <span class="sss-text-xs sss-font-normal sss-text-info">(3000/㎡)</span>
+          </span>
+        </span>
+        ): <span class="sss-text-lg sss-font-semibold sss-text-warning">0<span class="sss-text-xs sss-font-normal">万</span></span>
+      }
+        
+        装修成本(当前房屋为{decorateTarget()})
       </div>
     </div>
   )
@@ -118,7 +165,7 @@ function init() {
   )
 
   // 得房率
-  const efficiencyRatio = ((areaInfo.size / getNumber(totalArea?.textContent)) * 100).toFixed(2) + '%'
+  const efficiencyRatio = ((areaInfo.size / totalAreaNumber) * 100).toFixed(2) + '%'
 
   const efficiencyRatioEle = (
     <div class="sss-flex sss-items-center">

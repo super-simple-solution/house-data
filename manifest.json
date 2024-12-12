@@ -1,6 +1,6 @@
 {
   "name": "贝壳知价",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "manifest_version": 3,
   "description": "获取贝壳二手房各方面价格(税费、中介费等)，快速评估购房成本",
   "icons": {
