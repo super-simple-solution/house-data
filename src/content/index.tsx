@@ -3,8 +3,8 @@ import '@/style/index.scss'
 
 // https://wh.ke.com/ershoufang/104113418870.html
 enum AreaType {
-  Manual, // 测量,
-  Automatic, // 套内,
+  Manual = 0, // 测量,
+  Automatic = 1, // 套内,
 }
 
 type AreaInfo = {
@@ -15,11 +15,18 @@ type AreaInfo = {
 function init() {
   const areaInfo: AreaInfo = getAreaInfo()
   if (!areaInfo.size) return
-  const priceEle = getEle('.price-container .price') 
+  const priceEle = getEle('.price-container .price')
+  const priceTextEle = getEle('.price-container .price .text')
+  const unitEle = getEle('.price-container .price .unit')
   const areaEle = getEle('.houseInfo .area')
   const totalArea = getEle('.mainInfo', areaEle)
   const totalAreaNumber = getNumber(totalArea?.textContent)
   if (!priceEle || !areaEle) return
+
+  // 为priceEle添加类
+  priceEle.classList.add('sss-flex', 'sss-w-full')
+  priceTextEle?.classList.add('sss-flex-1')
+  unitEle?.classList.add('sss-mt-3', 'sss-ml-1')
   const totalPriceEle = getEle('.total', priceEle)
   const housePrice = Number(totalPriceEle?.textContent)
   const unitPrice = Math.ceil((housePrice * 10000) / areaInfo.size)
@@ -34,7 +41,7 @@ function init() {
 
   // 装修情况
   const labelList = $$('#introduction .label')
-  const decorateEle = labelList.find(item => item.textContent?.trim() === '装修情况')
+  const decorateEle = labelList.find((item) => item.textContent?.trim() === '装修情况')
   const needRedecorate = decorateEle && decorateEle.nextSibling?.textContent?.trim() === '简装'
   let redecoratePriceLow = '0'
   let redecoratePriceMid = '0'
@@ -46,17 +53,17 @@ function init() {
   }
   // 跳转至测量/套内面积数据
   const goToAreaEle = () => {
-    let scrollTarget
-    let target
+    let scrollTarget: HTMLElement | null = null
+    let target: HTMLElement | null = null
     if (areaInfo.type === AreaType.Manual) {
       scrollTarget = document.getElementById('layout')
       target = document.getElementById('infoList')
     } else {
       scrollTarget = document.getElementById('introduction')
-      target = getAutoAreaEle()
+      target = getAutoAreaEle() as HTMLElement | null
     }
     if (!scrollTarget || !target) return
-    scrollAndBlink(scrollTarget, target as HTMLElement)
+    scrollAndBlink(scrollTarget, target)
   }
 
   const goToTaxEle = () => {
@@ -74,20 +81,23 @@ function init() {
   }
 
   const areaTarget = () => (
+    // biome-ignore lint/a11y/useValidAnchor: <explanation>
     <a class="sss-cursor-pointer sss-text-primary" onClick={goToAreaEle}>
       {areaInfo.type === AreaType.Manual ? '测量面积' : '套内面积'}
     </a>
   )
 
   const taxTarget = () => (
+    // biome-ignore lint/a11y/useValidAnchor: <explanation>
     <a class="" onClick={goToTaxEle}>
       {tax}
     </a>
   )
 
   const decorateTarget = () => (
+    // biome-ignore lint/a11y/useValidAnchor: <explanation>
     <a class="sss-cursor-pointer sss-text-primary" onClick={goToDecorateEle}>
-      {needRedecorate ? '简装': '精装'}
+      {needRedecorate ? '简装' : '精装'}
     </a>
   )
 
@@ -120,26 +130,30 @@ function init() {
         </span>
         购房总成本{hasTaxInfo ? '' : '(不含税费)'}
       </div>
-      <div class="sss-my-1 sss-text-xs sss-text-info">
-      {needRedecorate ? (
-        <span>
-          <span class="sss-text-lg sss-font-semibold sss-text-warning">
-            {redecoratePriceLow}<span class="sss-text-xs sss-font-normal">万</span>
-            <span class="sss-text-xs sss-font-normal sss-text-info">(1000/㎡)</span>
-          </span>/
-          <span class="sss-text-lg sss-font-semibold sss-text-warning">
-            {redecoratePriceMid}<span class="sss-text-xs sss-font-normal">万</span>
-            <span class="sss-text-xs sss-font-normal sss-text-info">(2000/㎡)</span>
-          </span>/
-          <span class="sss-text-lg sss-font-semibold sss-text-warning">
-            {redecoratePriceHigh}<span class="sss-text-xs sss-font-normal">万</span>
-            <span class="sss-text-xs sss-font-normal sss-text-info">(3000/㎡)</span>
-          </span>
-        </span>
-        ): <span class="sss-text-lg sss-font-semibold sss-text-warning">0<span class="sss-text-xs sss-font-normal">万</span></span>
-      }
-        
-        装修成本(当前房屋为{decorateTarget()})
+      <div class="sss-mt-2 sss-text-sm sss-text-info sss-border sss-border-primary sss-p-1 sss-rounded-sm sss-bg-secondary">
+        <div class="sss-mb-2">装修成本(当前房屋为{decorateTarget()})</div>
+        <div>
+          {needRedecorate ? (
+            <div class="sss-flex sss-items-center sss-justify-between">
+              <div class="sss-font-semibold sss-text-warning">
+                <div class="sss-text-sm sss-font-normal">{redecoratePriceLow}万</div>
+                <div class="sss-text-xs sss-font-normal sss-text-info">(1000/㎡)</div>
+              </div>
+              <div class="sss-font-semibold sss-text-warning">
+                <div class="sss-text-sm sss-font-normal">{redecoratePriceMid}万</div>
+                <div class="sss-text-xs sss-font-normal sss-text-info">(2000/㎡)</div>
+              </div>
+              <div class="sss-font-semibold sss-text-warning">
+                <div class="sss-text-sm sss-font-normal">{redecoratePriceHigh}万</div>
+                <div class="sss-text-xs sss-font-normal sss-text-info">(3000/㎡)</div>
+              </div>
+            </div>
+          ) : (
+            <div class="sss-font-semibold sss-text-warning">
+              0<span class="sss-text-xs sss-font-normal">万</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -165,7 +179,7 @@ function init() {
   )
 
   // 得房率
-  const efficiencyRatio = ((areaInfo.size / totalAreaNumber) * 100).toFixed(2) + '%'
+  const efficiencyRatio = `${((areaInfo.size / totalAreaNumber) * 100).toFixed(2)}%`
 
   const efficiencyRatioEle = (
     <div class="sss-flex sss-items-center">
@@ -178,9 +192,10 @@ function init() {
   )
 
   const subInfoEle = getEle('.subInfo', areaEle) as HTMLElement
-  // @ts-expect-error jsx dom
-  getEle('.text', priceEle)?.insertBefore(finalPriceEle, getEle('.text .tax', priceEle) as HTMLElement)
-  // @ts-expect-error jsx dom
+  getEle('.text', priceEle)?.insertBefore(
+    finalPriceEle,
+    getEle('.text .tax', priceEle) as HTMLElement,
+  )
   areaEle.insertBefore(finalAreaEle, subInfoEle)
   areaEle.insertBefore(efficiencyRatioEle, subInfoEle)
   const priceContainer = getEle('.price-container .price div.text')
@@ -197,6 +212,7 @@ function getAreaInfo(): AreaInfo {
   // 页面已有测量/套内面积
   const areaEle = getAutoAreaEle()
   let areaNum = 0
+  // biome-ignore lint/complexity/noForEach: <explanation>
   areaEle?.childNodes.forEach((item) => {
     if (item.nodeType === 3 && item.textContent?.trim()) {
       areaNum = getNumber(item.textContent.trim())

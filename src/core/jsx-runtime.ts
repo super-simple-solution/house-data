@@ -1,25 +1,9 @@
-/* https://gist.github.com/borestad/eac42120613bc67a3714f115e8b485a7
- * Custom jsx parser
- * See: tsconfig.json
- *
- *   {
- *     "jsx": "react",
- *     "jsxFactory": "h",
- *     "lib": [
- *       "es2017",
- *       "dom",
- *       "dom.iterable"
- *     ]
- *   }
- *
- */
-
 export const entityMap = {
   '&': 'amp',
   '<': 'lt',
   '>': 'gt',
   '"': 'quot',
-  '\'': '#39', // eslint-disable-line
+  "'": '#39',
   '/': '#x2F',
 }
 
@@ -33,29 +17,27 @@ export const AttributeMapper = (val: string) =>
     tabIndex: 'tabindex',
     className: 'class',
     readOnly: 'readonly',
-  }[val] || val)
+  })[val] || val
 
-// tslint:disable-next-line:no-default-export
 export function h(
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
   tag: Function | string,
   attrs?: { [key: string]: any },
   ...children: (HTMLElement | string)[]
 ): HTMLElement {
-  attrs = attrs || {}
+  const attrs_final = attrs || {}
   const stack: any[] = [...children]
 
   // Support for components(ish)
   if (typeof tag === 'function') {
-    attrs.children = stack
-    return tag(attrs)
+    attrs_final.children = stack
+    return tag(attrs_final)
   }
 
   const elm = document.createElement(tag)
 
   // Add attributes
-  // eslint-disable-next-line prefer-const
-  for (let [name, val] of Object.entries(attrs)) {
+  for (let [name, val] of Object.entries(attrs_final)) {
     // event
     if (name.startsWith('on')) {
       elm.addEventListener(name.slice(2).toLowerCase(), val)
@@ -83,7 +65,9 @@ export function h(
 
     // Is child a leaf?
     if (!Array.isArray(child)) {
-      elm.appendChild((child as HTMLElement).nodeType == null ? document.createTextNode(child.toString()) : child)
+      elm.appendChild(
+        (child as HTMLElement).nodeType == null ? document.createTextNode(child.toString()) : child,
+      )
     } else {
       stack.push(...child)
     }

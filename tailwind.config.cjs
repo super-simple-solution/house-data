@@ -9,6 +9,7 @@ module.exports = {
     colors: {
       warning: '#fe615a',
       primary: '#3072f6',
+      secondary: '#f4f8fe',
       info: '#aaa',
     },
   },
